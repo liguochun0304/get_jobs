@@ -194,13 +194,13 @@ public class Operate {
         // 获取所有标签页句柄
         ArrayList<String> tabs = new ArrayList<>(CHROME_DRIVER.getWindowHandles());
         // 切换到新标签页
-        CHROME_DRIVER.switchTo().window(tabs.getLast());
+        CHROME_DRIVER.switchTo().window(tabs.get(0));
         return tabs;
     }
 
     /**
      * 向下滚动聊天记录页面，直到加载全部内容
-     * 
+     *
      * 替代原始代码:
      * ```java
      * JavascriptExecutor js = CHROME_DRIVER;

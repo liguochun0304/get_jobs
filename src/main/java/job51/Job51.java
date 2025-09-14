@@ -148,14 +148,25 @@ public class Job51 {
         List<WebElement> titles = CHROME_DRIVER.findElements(By.cssSelector("[class*='jname text-cut']"));
         List<WebElement> companies = CHROME_DRIVER.findElements(By.cssSelector("[class*='cname text-cut']"));
         JavascriptExecutor executor = CHROME_DRIVER;
-        for (int i = 0; i < checkboxes.size(); i++) {
+
+        // 确保titles和companies的大小与checkboxes一致
+        int maxItems = Math.min(checkboxes.size(), Math.min(titles.size(), companies.size()));
+
+        for (int i = 0; i < maxItems; i++) {
             WebElement checkbox = checkboxes.get(i);
             executor.executeScript("arguments[0].click();", checkbox);
-            String title = titles.get(i).getText();
-            String company = companies.get(i).getText();
-            resultList.add(company + " | " + title);
-            log.info("选中:{} | {} 职位", company, title);
+
+            // 确保索引在有效范围内
+            if (i < titles.size() && i < companies.size()) {
+                String title = titles.get(i).getText();
+                String company = companies.get(i).getText();
+                resultList.add(company + " | " + title);
+                log.info("选中:{} | {} 职位", company, title);
+            } else {
+                log.warn("索引 {} 超出 titles 或 companies 列表范围", i);
+            }
         }
+
         SeleniumUtil.sleep(1);
         ACTIONS.keyDown(Keys.CONTROL).sendKeys(Keys.HOME).keyUp(Keys.CONTROL).perform();
         boolean success = false;
@@ -163,15 +174,20 @@ public class Job51 {
             try {
                 // 查询按钮是否存在
                 WebElement parent = CHROME_DRIVER.findElement(By.cssSelector("div.tabs_in"));
-                List<WebElement> button = parent.findElements(By.cssSelector("button.p_but"));
-                // 如果按钮存在，则点击
-                if (button != null && !button.isEmpty()) {
+                List<WebElement> buttons = parent.findElements(By.cssSelector("button.p_but"));
+
+                // 修复索引越界问题：检查按钮列表大小，使用最后一个可用按钮
+                if (buttons != null && !buttons.isEmpty()) {
                     SeleniumUtil.sleep(1);
-                    button.get(1).click();
+                    // 使用最后一个按钮而不是固定索引1
+                    buttons.get(buttons.size() - 1).click();
                     success = true;
+                } else {
+                    log.error("未找到投递按钮，跳过当前页");
+                    success = true; // 退出循环，避免无限等待
                 }
             } catch (ElementClickInterceptedException e) {
-                log.error("失败，1s后重试..");
+                log.error("点击失败，1s后重试..");
                 SeleniumUtil.sleep(1);
             }
         }

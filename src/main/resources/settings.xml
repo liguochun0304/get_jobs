@@ -29,6 +29,12 @@
             <name>阿里云阿帕奇仓库</name>
             <url>https://maven.aliyun.com/repository/apache-snapshots</url>
         </mirror>
+        <mirror>
+            <id>microsoft</id>
+            <name>Microsoft Maven Mirror</name>
+            <url>https://maven.azure.cn/microsoft/</url>
+            <mirrorOf>microsoft</mirrorOf>
+        </mirror>
     </mirrors>
     <proxies/>
     <activeProfiles/>

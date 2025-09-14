@@ -143,6 +143,10 @@ public class Liepin {
                 log.info("命中已排除公司：{}", companyName);
                 continue;
             }
+            // 在判断前添加这些日志
+            log.info("当前岗位名: {}", jobName);
+            log.info("需要包含的关键词: {}", CONTAINS_JOB_NAME);
+
             if (CONTAINS_JOB_NAME.stream().noneMatch(jobName::contains)){
                 log.info("命中未包含的工作名：{}",jobName);
                 continue;
@@ -245,7 +249,7 @@ public class Liepin {
             while (true) {
                 try {
                     // 检查是否已登录
-                    String login = CHROME_DRIVER.findElements(By.xpath("//button[@type='button']")).getFirst().getText();
+                    String login = CHROME_DRIVER.findElements(By.xpath("//button[@type='button']")).get(0).getText();
 
                     if (!login.contains("登录")) {
                         log.info("用户扫码成功，继续执行...");
@@ -253,7 +257,7 @@ public class Liepin {
                     }
                 } catch (Exception ignored) {
                     try {
-                        String login = CHROME_DRIVER.findElements(By.xpath("//div[@id='header-quick-menu-user-info']")).getFirst().getText();
+                        String login = CHROME_DRIVER.findElements(By.xpath("//div[@id='header-quick-menu-user-info']")).get(0).getText();
                         if (login.contains("你好")){
                             break;
                         }

@@ -51,7 +51,8 @@ public class LiepinConfig {
     @SneakyThrows
     public static LiepinConfig init() {
         LiepinConfig config = JobUtils.getConfig(LiepinConfig.class);
-        // 转换城市编码
+        // 新增日志
+        System.out.println("需要包含的关键词: " + config.getContainsJobName());
         config.setCityCode(LiepinEnum.CityCode.forValue(config.getCityCode()).getCode());
         return config;
     }
